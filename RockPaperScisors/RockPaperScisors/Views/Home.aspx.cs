@@ -22,41 +22,39 @@ namespace RockPaperScisors
         protected void StartTournament_Click(object sender, EventArgs e)
         {
             int count = Convert.ToInt32(Session["NUMBER_OF_PLAYERS"]);
-            if(count > 1)
+            Table1.Rows.Clear();
+            List<Player> players = new List<Player>();
+            for (int i = 0; i < count; i++)
             {
-                Table1.Rows.Clear();
-                List<Player> players = new List<Player>();
-                for (int i = 0; i < count; i++)
-                {
-                    string[] separador = { "$_$" };
-                    string[] player = Session["PLAYER_" + i].ToString().Split(separador, StringSplitOptions.RemoveEmptyEntries);
+                string[] separador = { "$_$" };
+                string[] player = Session["PLAYER_" + i].ToString().Split(separador, StringSplitOptions.RemoveEmptyEntries);
 
-                    Player player1 = new Player(player[0]);
-                    player1.ParseMovement(player[1].ToUpper());
-                    players.Add(player1);
-                    TableRow row = new TableRow();
-                    TableCell cell1 = new TableCell();
-                    TableCell cell2 = new TableCell();
-                    cell1.Text = player[0];
-                    cell2.Text = player[1].ToUpper();
-                    row.Cells.Add(cell1);
-                    row.Cells.Add(cell2);
-                    Table1.Rows.Add(row);
-                }
+                Player player1 = new Player(player[0]);
+                player1.ParseMovement(player[1].ToUpper());
+                players.Add(player1);
+                TableRow row = new TableRow();
+                TableCell cell1 = new TableCell();
+                TableCell cell2 = new TableCell();
+                cell1.Text = player[0];
+                cell2.Text = player[1].ToUpper();
+                row.Cells.Add(cell1);
+                row.Cells.Add(cell2);
+                Table1.Rows.Add(row);
+            }
+            try
+            {
                 Player winner = Tournament.RpsTournamentWinner(players);
 
                 lblModalTitle.Text = "Championship Modal";
                 lblModalBody.Text = "Tournament winner was: " + winner.Name + " <br>With the move: " + winner.Movement;
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "myModal", "$('#myModal').modal();", true);
                 upModal.Update();
-            }
-            else
+            }catch (WrongNumberOfPlayersException exc)
             {
                 lblModalTitle.Text = "Validation Modal";
-                lblModalBody.Text = "A minimum of 2 players are required to start the tournament.";
+                lblModalBody.Text = exc.Message;
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "myModal", "$('#myModal').modal();", true);
                 upModal.Update();
-                PreencheTabela();
             }
             
         }

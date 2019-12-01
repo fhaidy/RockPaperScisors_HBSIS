@@ -5,39 +5,17 @@ namespace RockPaperScisors.Entities
 {
     public static class Tournament
     {
-        //public Player Winner{ get; set; }
-        //public List<Player> Players { get; set; } = new List<Player>();
-
-        //public Tournament()
-        //{
-        //}
-
-        //public void AddPlayer(Player player)
-        //{
-        //    Players.Add(player);
-        //}
-
-        //public void AddDefaultPlayers()
-        //{
-        //    Players.Add(new Player("Armando", Enums.Movements.P));
-        //    Players.Add(new Player("Dave", Enums.Movements.S));
-        //    Players.Add(new Player("Richard", Enums.Movements.R));
-        //    Players.Add(new Player("Michael", Enums.Movements.S));
-        //    Players.Add(new Player("Allen", Enums.Movements.S));
-        //    Players.Add(new Player("Omer", Enums.Movements.P));
-        //    Players.Add(new Player("David E.", Enums.Movements.R));
-        //    Players.Add(new Player("Richard X.", Enums.Movements.P));
-        //}
-
         public static Player RpsTournamentWinner(List<Player> players)
         {
+            if (players.Count < 2)
+            {
+                throw new WrongNumberOfPlayersException("The number of players must be 2 or more.");
+            }
             Player roundWinner;
             List<Player> winners = new List<Player>();
             if(players.Count > 2)
             {
-                List<Player> auxList = new List<Player>();
-                auxList.Add(players[0]);
-                auxList.Add(players[1]);
+                List<Player> auxList = new List<Player> { players[0], players[1] };
                 roundWinner = RpsGameWinner(auxList);
                 players.RemoveRange(0, 2);
                 auxList.Clear();
@@ -48,9 +26,7 @@ namespace RockPaperScisors.Entities
             }
             else
             {
-                List<Player> auxList = new List<Player>();
-                auxList.Add(players[0]);
-                auxList.Add(players[1]);
+                List<Player> auxList = new List<Player>{ players[0],players[1] };
                 return RpsGameWinner(auxList);
             }
         }
@@ -58,7 +34,7 @@ namespace RockPaperScisors.Entities
         public static Player RpsGameWinner(List<Player> players)
         {
             if(players.Count != 2){
-                throw new WrongNumberOfPlayersException("The number of players can't be different of 2.");
+                throw new WrongNumberOfPlayersException("The number of players must be 2 or more.");
             }
             return CheckWinner(players.ToArray());
         }
